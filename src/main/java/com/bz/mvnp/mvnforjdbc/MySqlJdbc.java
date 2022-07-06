@@ -14,7 +14,7 @@ public class MySqlJdbc {
 		try {
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
 //			Statement stmt = connect.createStatement();
-			PreparedStatement pStmt = connect.prepareStatement("update addressbook set city = 'pune' where firstname = ?;");
+			PreparedStatement pStmt = connect.prepareStatement("delete from addressbook where firstname = ?");
 			String name ="Piyush";
 			pStmt.setString(1, name);
 			pStmt.execute();
