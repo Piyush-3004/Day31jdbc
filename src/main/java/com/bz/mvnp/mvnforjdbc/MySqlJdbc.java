@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 
 public class MySqlJdbc {
 
@@ -12,9 +13,11 @@ public class MySqlJdbc {
 		Connection connect = null;
 		try {
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
-			Statement stmt = connect.createStatement();
-			stmt.execute("insert into addressbook values ('Piyush' ,'patil','shalimar','nashik','maharashtra',422001,901155747,'piyush@gmail.com');");
-
+//			Statement stmt = connect.createStatement();
+			PreparedStatement pStmt = connect.prepareStatement("update addressbook set city = 'pune' where firstname = ?;");
+			String name ="Piyush";
+			pStmt.setString(1, name);
+			pStmt.execute();
 		} catch (SQLException e) {
 			System.out.println("unable to connect");
 		} finally {
