@@ -11,9 +11,9 @@ public class MySqlJdbc {
 	public static void main(String[] args) throws SQLException {
 		Connection connect = null;
 		try {
-			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "root");
+			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
 			Statement stmt = connect.createStatement();
-			stmt.execute("create database AddressBookService");
+			stmt.execute("create table AddressBook (firstname varchar(50),lastname varchar(50),address varchar(100),city varchar(50),state varchar(50),zip integer,phonenumber integer,email varchar(100));");
 
 		} catch (SQLException e) {
 			System.out.println("unable to connect");
