@@ -13,28 +13,17 @@ public class MySqlJdbc {
 		Connection connect = null;
 		try {
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
-
-			PreparedStatement pStmt = connect.prepareStatement("select city from addressbook ;");
+//			Statement stmt = connect.createStatement();
+			String city ="Nashik";
+			PreparedStatement pStmt = connect.prepareStatement("select * from addressbook where city=? order by firstname;");
+			pStmt.setString(1,city);
 			ResultSet res = pStmt.executeQuery();
-
-			int size = 0;
-			while (res.next()) {
-				size = size + 1;
+			while(res.next()) {
+				System.out.println(res.getString(1)+" "+res.getString(2)+" "+res.getString(3)+" "+res.getString(4)+" "+res.getString(5)+" "+res.getInt(6)+" "+res.getInt(7)+" "+res.getString(8));
 			}
-			System.out.println("size of column city is " + size);
-
-			PreparedStatement pStmt1 = connect.prepareStatement("select state from addressbook ;");
-			ResultSet res1 = pStmt1.executeQuery();
-
-			int sizeState = 0;
-			while (res1.next()) {
-				sizeState = sizeState + 1;
-			}
-			System.out.println("size of column state is " + sizeState);
-
-		} catch (
-
-		SQLException e) {
+				//	pStmt.execute();
+			
+		} catch (SQLException e) {
 			System.out.println("unable to connect");
 		} finally {
 			connect.close();
