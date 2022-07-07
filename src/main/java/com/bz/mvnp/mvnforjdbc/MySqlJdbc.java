@@ -15,13 +15,114 @@ public class MySqlJdbc {
 
 		Scanner scanner = new Scanner(System.in);
 		System.out.println(
-				"Enter 1 to get elements sorted on firstnames of persons in City, 2 to identify by name and type");
+				"Enter 1 to get elements sorted on firstnames of persons in City, 2 to identify by name and type , 3 to add to friend and family;");
 		int ch = scanner.nextInt();
 		if (ch == 1)
 			sortByName();
 		if (ch == 2)
 			identifyByNameAndType();
+		if (ch == 3)
+			addToFriendFamily();
 
+	}
+
+	public static void addToFriendFamily() throws SQLException {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("enter persom details ");
+		System.out.println("Enter 1 to add to friend, 2 to add to family");
+		int ch = scanner.nextInt();
+		if (ch == 1) {
+			System.out.println("Enter firstname");
+			String firstname = scanner.next();
+			System.out.println("Enter lastname");
+			String lastname = scanner.next();
+			System.out.println("Enter address");
+			String addr = scanner.next();
+			System.out.println("Enter city");
+			String city = scanner.next();
+			System.out.println("Enter state");
+			String state = scanner.next();
+			System.out.println("Enter zip");
+			int zip = scanner.nextInt();
+			System.out.println("Enter mobile");
+			int mobile = scanner.nextInt();
+			System.out.println("Enter eMail");
+			String eMail = scanner.next();
+			String type = "Friend";
+			System.out.println("Enter Book name");
+			String bookName = scanner.next();
+			Connection connect = null;
+			try {
+				connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
+
+				PreparedStatement pStmt = connect.prepareStatement(
+						"insert into addressbook (firstname,lastname,address,city,state,zip,phonenumber,email,type,name) values (?,?,?,?,?,?,?,?,?,?);");
+				pStmt.setString(1, firstname);
+				pStmt.setString(2, lastname);
+				pStmt.setString(3, addr);
+				pStmt.setString(4, city);
+				pStmt.setString(5, state);
+				pStmt.setInt(6, zip);
+				pStmt.setInt(7, mobile);
+				pStmt.setString(8, eMail);
+				pStmt.setString(9, type);
+				pStmt.setString(10, bookName);
+
+				pStmt.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("unable to connect");
+			} finally {
+				connect.close();
+			}
+
+		}
+		if (ch == 2) {
+			System.out.println("Enter firstname");
+			String firstname = scanner.next();
+			System.out.println("Enter lastname");
+			String lastname = scanner.next();
+			System.out.println("Enter address");
+			String addr = scanner.next();
+			System.out.println("Enter city");
+			String city = scanner.next();
+			System.out.println("Enter state");
+			String state = scanner.next();
+			System.out.println("Enter zip");
+			int zip = scanner.nextInt();
+			System.out.println("Enter mobile");
+			int mobile = scanner.nextInt();
+			System.out.println("Enter eMail");
+			String eMail = scanner.next();
+			String type = "Family";
+			System.out.println("Enter Book name");
+			String bookName = scanner.next();
+
+			Connection connect = null;
+			try {
+				connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
+
+				PreparedStatement pStmt = connect.prepareStatement(
+						"insert into addressbook (firstname,lastname,address,city,state,zip,phonenumber,email,type,name) values(?,?,?,?,?,?,?,?,?,?);");
+				pStmt.setString(1, firstname);
+				pStmt.setString(2, lastname);
+				pStmt.setString(3, addr);
+				pStmt.setString(4, city);
+				pStmt.setString(5, state);
+				pStmt.setInt(6, zip);
+				pStmt.setInt(7, mobile);
+				pStmt.setString(8, eMail);
+				pStmt.setString(9, type);
+				pStmt.setString(10, bookName);
+
+				pStmt.executeUpdate();
+
+			} catch (SQLException e) {
+				System.out.println("unable to connect");
+			} finally {
+				connect.close();
+			}
+
+		}
 	}
 
 	public static void countByType() throws SQLException {
