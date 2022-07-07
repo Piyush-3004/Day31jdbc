@@ -24,6 +24,36 @@ public class MySqlJdbc {
 
 	}
 
+	public static void countByType() throws SQLException {
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("enter type to get count by type ");
+		String type = scanner.next();
+
+		Connection connect = null;
+		try {
+			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
+
+			PreparedStatement pStmt = connect.prepareStatement("select * from addressbook where type=?;");
+			pStmt.setString(1, type);
+			ResultSet res = pStmt.executeQuery();
+			int count = 0;
+			while (res.next()) {
+				count += 1;
+				System.out.println(res.getString(1) + " " + res.getString(2) + " " + res.getString(3) + " "
+						+ res.getString(4) + " " + res.getString(5) + " " + res.getInt(6) + " " + res.getInt(7) + " "
+						+ res.getString(8) + " " + res.getString(9) + " " + res.getString(10));
+			}
+			// pStmt.execute();
+
+			System.out.println("no of elements in type are " + count);
+		} catch (SQLException e) {
+			System.out.println("unable to connect");
+		} finally {
+			connect.close();
+		}
+	}
+
 	public static void identifyByNameAndType() throws SQLException {
 
 		Connection connect = null;
@@ -56,7 +86,7 @@ public class MySqlJdbc {
 			while (res.next()) {
 				System.out.println(res.getString(1) + " " + res.getString(2) + " " + res.getString(3) + " "
 						+ res.getString(4) + " " + res.getString(5) + " " + res.getInt(6) + " " + res.getInt(7) + " "
-						+ res.getString(8));
+						+ res.getString(8) + " " + res.getString(9) + " " + res.getString(10));
 			}
 
 			System.out.println("enter book name to view the book");
