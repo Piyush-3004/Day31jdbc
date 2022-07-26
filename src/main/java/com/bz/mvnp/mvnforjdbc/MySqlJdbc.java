@@ -14,19 +14,51 @@ public class MySqlJdbc {
 	public static void main(String[] args) throws SQLException {
 
 		Scanner scanner = new Scanner(System.in);
-		System.out.println(
-				"Enter 1 to get elements sorted on firstnames of persons in City, 2 to identify by name and type , 3 to add to friend and family;");
+		System.out.println("Enter 6 to Retrive Persons From CityOrState, 7 to get sizeby city and state , "
+				+ " 8 sort on name based on city ,9 to identify book by name and type ,10 to get count by type ,"
+				+ " 11 to add to both friend and famili ," + " 13 try operations with another table");
 		int ch = scanner.nextInt();
-		if (ch == 1)
-			sortByName();
-		if (ch == 2)
+		if (ch == 6)
+			retrivePersonsFromCityOrState();
+		if (ch == 7)
+			getCountFromCityOrState();
+		if (ch == 8)
+			sortByNameForCity();
+		if (ch == 9)
 			identifyByNameAndType();
-		if (ch == 3)
-			addToFriendFamily();
+		if (ch == 10)
+			getCountByType();
+		if (ch == 11)
+			addToFriendAndFamily();
+		if (ch == 13)
+			newTable();
 
 	}
 
-	public static void addToFriendFamily() throws SQLException {
+	///////////////////// Uc 13 //////////////////////////////
+	public static void newTable() throws SQLException {
+		try {
+
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("We have 2 tables addressbook and addressbook2 select te table after entering below details:"); 
+			System.out.println(
+					"Enter 6 to retrivePersonsFromCityOrState, 7 getCountFromCityOrState,8 to sortByNameForCity,10 to getCountByType()");
+			int ch = scanner.nextInt();
+			if(ch==6)
+			retrivePersonsFromCityOrState();
+			else if(ch==7)
+			getCountFromCityOrState();
+			else if(ch==8)
+			sortByNameForCity();
+			else if(ch==10)
+			getCountByType();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+	}
+
+//////////////////////////////////   Uc 11  ////////////////////////////
+	public static void addToFriendAndFamily() throws SQLException {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("enter persom details ");
 		System.out.println("Enter 1 to add to friend, 2 to add to family");
@@ -125,40 +157,42 @@ public class MySqlJdbc {
 		}
 	}
 
-	public static void countByType() throws SQLException {
-
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("enter type to get count by type ");
-		String type = scanner.next();
+//////////////////////////Uc 10  /////////////////////////////	
+	public static void getCountByType() throws SQLException {
 
 		Connection connect = null;
 		try {
+
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
 
-			PreparedStatement pStmt = connect.prepareStatement("select * from addressbook where type=?;");
-			pStmt.setString(1, type);
-			ResultSet res = pStmt.executeQuery();
-			int count = 0;
-			while (res.next()) {
-				count += 1;
-				System.out.println(res.getString(1) + " " + res.getString(2) + " " + res.getString(3) + " "
-						+ res.getString(4) + " " + res.getString(5) + " " + res.getInt(6) + " " + res.getInt(7) + " "
-						+ res.getString(8) + " " + res.getString(9) + " " + res.getString(10));
-			}
-			// pStmt.execute();
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Enter table name , 1st table addressbook 2ndtable addressbook2 ");
+			String tablename = scanner.next();
 
-			System.out.println("no of elements in type are " + count);
+			System.out.println("Enter Type");
+			String type = scanner.next();
+			PreparedStatement pStmt = connect.prepareStatement("select count(type) from ? where type=?;");
+
+			pStmt.setString(1, tablename);
+			pStmt.setString(2, type);
+			ResultSet res = pStmt.executeQuery();
+			res.next();
+			System.out.println(res.getInt("count(type)"));
+
 		} catch (SQLException e) {
-			System.out.println("unable to connect");
+			System.out.println(e);
 		} finally {
 			connect.close();
 		}
+
 	}
 
+/////////////////////////////////  Uc 9  ////////////////////////////	
 	public static void identifyByNameAndType() throws SQLException {
 
 		Connection connect = null;
 		try {
+			Scanner scanner = new Scanner(System.in);
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
 
 			Statement stmt = connect.createStatement();
@@ -174,13 +208,13 @@ public class MySqlJdbc {
 //			stmt.execute("update addressbook set name='Book1' where firstname = 'Piyush';");
 			// stmt.execute();
 
-			PreparedStatement pStmt = connect.prepareStatement("update addressbook set type=? where city = 'Nashik';");
-			Scanner scanner = new Scanner(System.in);
-			System.out.println("enter firstname to update type ");
+			System.out.println("enter name of book , book0 or book1");
 			String name = scanner.next();
-			pStmt.setString(1, name);
+
 			System.out.println("enter type for " + name);
 			String type = scanner.next();
+			PreparedStatement pStmt = connect.prepareStatement("select * from addressbook where name=? and type=? ");
+			pStmt.setString(1, name);
 			pStmt.setString(2, type);
 			ResultSet res = pStmt.executeQuery();
 
@@ -188,30 +222,6 @@ public class MySqlJdbc {
 				System.out.println(res.getString(1) + " " + res.getString(2) + " " + res.getString(3) + " "
 						+ res.getString(4) + " " + res.getString(5) + " " + res.getInt(6) + " " + res.getInt(7) + " "
 						+ res.getString(8) + " " + res.getString(9) + " " + res.getString(10));
-			}
-
-			System.out.println("enter book name to view the book");
-			String bookName = scanner.next();
-			PreparedStatement pStmt1 = connect.prepareStatement("select * from addressbook where name=?;");
-			pStmt1.setString(1, bookName);
-			ResultSet res1 = pStmt1.executeQuery();
-
-			while (res1.next()) {
-				System.out.println(res1.getString(1) + " " + res1.getString(2) + " " + res1.getString(3) + " "
-						+ res1.getString(4) + " " + res1.getString(5) + " " + res1.getInt(6) + " " + res1.getInt(7)
-						+ " " + res1.getString(8) + " " + res1.getString(9) + " " + res1.getString(10));
-			}
-
-			System.out.println("enter book type to view the book");
-			String bookType = scanner.next();
-			PreparedStatement pStmt2 = connect.prepareStatement("select * from addressbook where type=?;");
-			pStmt2.setString(1, bookType);
-			ResultSet res2 = pStmt2.executeQuery();
-
-			while (res2.next()) {
-				System.out.println(res2.getString(1) + " " + res2.getString(2) + " " + res2.getString(3) + " "
-						+ res2.getString(4) + " " + res2.getString(5) + " " + res2.getInt(6) + " " + res2.getInt(7)
-						+ " " + res2.getString(8) + " " + res2.getString(9) + " " + res2.getString(10));
 			}
 
 		} catch (SQLException e) {
@@ -222,32 +232,90 @@ public class MySqlJdbc {
 
 	}
 
-	public static void sortByName() throws SQLException {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter city to sort by name");
-		scanner.next();
+//////////////////////////Uc 8 //////////////////////////////////
+	public static void sortByNameForCity() throws SQLException {
 		Connection connect = null;
 		try {
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
-//			Statement stmt = connect.createStatement();
-			String city = "Nashik";
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Enter table name , 1st table addressbook 2ndtable addressbook2 ");
+			String tablename = scanner.next();
+
+			System.out.println("Enter city or State");
+			String cityOrState = scanner.next();
 			PreparedStatement pStmt = connect
-					.prepareStatement("select * from addressbook where city=? order by firstname;");
-			pStmt.setString(1, city);
+					.prepareStatement("select * from ? where city=? or state=? order by firstname;");
+			pStmt.setString(1, tablename);
+			pStmt.setString(2, cityOrState);
+			pStmt.setString(3, cityOrState);
 			ResultSet res = pStmt.executeQuery();
 			while (res.next()) {
 				System.out.println(res.getString(1) + " " + res.getString(2) + " " + res.getString(3) + " "
 						+ res.getString(4) + " " + res.getString(5) + " " + res.getInt(6) + " " + res.getInt(7) + " "
 						+ res.getString(8));
 			}
-			// pStmt.execute();
 
 		} catch (SQLException e) {
 			System.out.println("unable to connect");
 		} finally {
 			connect.close();
 		}
+	}
 
+///////////////////////  Uc 7  //////////////////////////////
+	public static void getCountFromCityOrState() throws SQLException {
+		Connection connect = null;
+		try {
+
+			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
+
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Enter table name , 1st table addressbook 2ndtable addressbook2 ");
+			String tablename = scanner.next();
+
+			System.out.println("Enter city or State");
+			String cityOrState = scanner.next();
+			PreparedStatement pStmt = connect.prepareStatement("select count(city) from ? where city =?;");
+			pStmt.setString(1, tablename);
+			pStmt.setString(2, cityOrState);
+			ResultSet res = pStmt.executeQuery();
+			res.next();
+			System.out.println(res.getInt("count(city)"));
+
+		} catch (SQLException e) {
+			System.out.println(e);
+		} finally {
+			connect.close();
+		}
+	}
+
+/////////////////////// Uc 6 //////////////////////////////
+	public static void retrivePersonsFromCityOrState() throws SQLException {
+		Connection connect = null;
+
+		try {
+			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/AddressBookService", "root", "root");
+			Scanner scanner = new Scanner(System.in);
+
+			System.out.println("Enter table name , 1st table addressbook 2ndtable addressbook2 ");
+			String tablename = scanner.next();
+
+			System.out.println("Enter city or State");
+			String cityOrState = scanner.next();
+			PreparedStatement pStmt = connect.prepareStatement("select * from ? where city =? or state=?;");
+			pStmt.setString(1, tablename);
+			pStmt.setString(2, cityOrState);
+			pStmt.setString(3, cityOrState);
+
+			ResultSet res = pStmt.executeQuery();
+			while (res.next()) {
+				System.out.println(res.getString(1) + " " + res.getString(2) + " " + res.getString(3) + " "
+						+ res.getString(4) + " " + res.getString(5) + " " + res.getInt(6) + " " + res.getInt(7) + " "
+						+ res.getString(8) + " " + res.getString(9) + " " + res.getString(10));
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
 	}
 
 }
